@@ -10,12 +10,12 @@ ContinuationIndentWidth: 4
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterFunction: true
-  AfterStruct: true
-  AfterClass: true
-  AfterEnum: true
-  AfterUnion: true
+  AfterStruct: false
+  AfterClass: false 
+  AfterEnum: false
+  AfterUnion: false
   AfterControlStatement: Never
-  AfterNamespace: true
+  AfterNamespace: false
   BeforeElse: false
   BeforeCatch: false
   IndentBraces: false

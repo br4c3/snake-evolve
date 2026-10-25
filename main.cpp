@@ -24,31 +24,30 @@ struct Vec2 {
     int y;
     int x;
 
-    Vec2 operator+(const Vec2& other) const {
+    Vec2 operator+(const Vec2& other) const
+    {
         return {y + other.y, x + other.x};
     }
 
-    bool operator==(const Vec2& other) const {
+    bool operator==(const Vec2& other) const
+    {
         return y == other.y && x == other.x;
     }
 };
 
-constexpr Vec2 UP    = {-1,  0};
-constexpr Vec2 DOWN  = { 1,  0};
-constexpr Vec2 LEFT  = { 0, -1};
-constexpr Vec2 RIGHT = { 0,  1};
+constexpr Vec2 UP    = {-1, 0};
+constexpr Vec2 DOWN  = {1, 0};
+constexpr Vec2 LEFT  = {0, -1};
+constexpr Vec2 RIGHT = {0, 1};
 
-
-typedef struct
-{
-    int head_x;
-    int head_y;
+typedef struct {
+    int  head_x;
+    int  head_y;
     Vec2 direction = RIGHT;
-    int size;
+    int  size;
 
     std::deque<Vec2> body;
 } Snake;
-
 
 void init(Snake& snake, std::pair<int, int> init_pos)
 {
@@ -61,7 +60,47 @@ void init(Snake& snake, std::pair<int, int> init_pos)
     snake.body.push_front({snake.head_y, snake.head_x});
 }
 
-void move(Snake& snake, int grid[][WIDTH]) {
+/*
+ * Event control
+ */
+
+bool is_opposite(const Vec2& a, const Vec2& b)
+{
+    return a.y + b.y == 0 && a.x + b.x == 0;
+}
+
+void change_direction(Snake& snake, const Vec2& direction)
+{
+    if (is_opposite(snake.direction, direction)) {
+        return;
+    }
+
+    snake.direction = direction;
+}
+
+void handle_input(Snake& snake, char key)
+{
+    switch (key) {
+    case 'w':
+        change_direction(snake, UP);
+        break;
+
+    case 's':
+        change_direction(snake, DOWN);
+        break;
+
+    case 'a':
+        change_direction(snake, LEFT);
+        break;
+
+    case 'd':
+        change_direction(snake, RIGHT);
+        break;
+    }
+}
+
+void move(Snake& snake, int grid[][WIDTH])
+{
     Vec2 next = snake.body.front() + snake.direction;
 
     snake.body.push_front(next);
@@ -75,15 +114,18 @@ void eat(Snake& snake, int grid[][WIDTH])
     snake.body.push_front(next);
 }
 
-void update(Snake& snake, int grid[][WIDTH])
+/*
+ * Update
+ */
+void update(const Snake& snake, int grid[][WIDTH])
 {
-    std::cout << snake.body.empty() << '\n';
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            grid[y][x] = 0;
+        }
+    }
 
-    while (!snake.body.empty()) {
-        Vec2 pos = snake.body.front();
-        snake.body.pop_front();
-
-        std::cout << pos.y << ' ' << pos.x << '\n';
+    for (const Vec2& pos : snake.body) {
         grid[pos.y][pos.x] = SNAKE;
     }
 }
@@ -103,13 +145,16 @@ int main(void)
     Snake snake;
     init(snake, {1, 1});
 
-    eat(snake, grid);
-    eat(snake, grid);
-    move(snake, grid);
-    move(snake, grid);
-    move(snake, grid);
-    update(snake, grid);
-    display(snake, grid);
+    char key;
+
+    while (std::cin >> key) {
+        handle_input(snake, key);
+
+        move(snake, grid);
+
+        update(snake, grid);
+        display(snake, grid);
+    }
 
     return 0;
 }
