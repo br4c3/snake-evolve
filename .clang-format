@@ -1,0 +1,82 @@
+BasedOnStyle: LLVM
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+# Braces
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterStruct: true
+  AfterClass: true
+  AfterEnum: true
+  AfterUnion: true
+  AfterControlStatement: Never
+  AfterNamespace: true
+  BeforeElse: false
+  BeforeCatch: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+
+# Short statements
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+
+# Pointers and references
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: true
+SpaceBeforeAssignmentOperators: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceBeforeCpp11BracedList: false
+
+# Align variable declarations
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+# Align assignment operators
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+  AlignCompound: true
+  PadOperators: true
+
+# Align macros
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+# Other alignments
+AlignOperands: Align
+AlignTrailingComments: true
+
+# Line wrapping
+ColumnLimit: 100
+BreakBeforeBinaryOperators: None
+
+# Include directives
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+# Namespaces and access modifiers
+NamespaceIndentation: None
+AccessModifierOffset: -4
+IndentCaseLabels: false
+
+# Function arguments
+BinPackArguments: true
+BinPackParameters: true
