@@ -1,31 +1,14 @@
 #include <iostream>
+#include <random>
 
+#include "agent.hpp"
 #include "game.hpp"
 
-void handle_input(Game& game, char key)
-{
-    switch (key) {
-    case 'w':
-        change_direction(game.snake, UP);
-        break;
+constexpr int EPISODES = 15000;
 
-    case 's':
-        change_direction(game.snake, DOWN);
-        break;
-
-    case 'a':
-        change_direction(game.snake, LEFT);
-        break;
-
-    case 'd':
-        change_direction(game.snake, RIGHT);
-        break;
-
-    case 'q':
-        game.running = false;
-        break;
-    }
-}
+/*
+ * Render
+ */
 
 void display(const Game& game)
 {
@@ -43,33 +26,48 @@ void display(const Game& game)
         for (int x = 0; x < WIDTH; x++) {
             std::cout << grid[y][x] << ' ';
         }
+
         std::cout << '\n';
     }
 
     std::cout << "Score: " << game.score << "\n\n";
 }
 
+/*
+ * Main
+ */
+
 int main(void)
 {
+    std::mt19937 rng(std::random_device{}());
+
+    Agent agent;
+
+    std::cout << "Training started...\n";
+
+    train(agent, EPISODES, rng);
+
+    std::cout << "\nTraining completed.\n";
+
+    // 학습 종료 후 탐험 비활성화
+    agent.epsilon = 0.0f;
+
     Game game;
-    init_game(game);
+    reset(game, rng);
+
+    while (game.running) {
+        int state = get_state(game);
+
+        Action action = choose_action(agent, state, rng);
+
+        step(game, action, rng);
+    }
+
+    std::cout << "\nEvaluation game:\n";
 
     display(game);
 
-    char key;
-
-    while (game.running && std::cin >> key) {
-        handle_input(game, key);
-
-        if (!game.running) break;
-
-        if (!move(game)) {
-            std::cout << "Game Over!\n";
-            break;
-        }
-
-        display(game);
-    }
+    std::cout << "Final Score: " << game.score << '\n';
 
     return 0;
 }

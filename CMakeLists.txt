@@ -10,6 +10,7 @@ add_executable(snake-evolve
     src/main.cpp
     src/snake.cpp
     src/game.cpp
+    src/agent.cpp
 )
 
 target_include_directories(snake-evolve PRIVATE

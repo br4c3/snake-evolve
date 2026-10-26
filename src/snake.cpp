@@ -7,14 +7,33 @@ void init_snake(Snake& snake, Vec2 pos)
     snake.body.push_front(pos);
 }
 
-bool is_opposite(const Vec2& a, const Vec2& b)
+Vec2 rotate_left(const Vec2& direction)
 {
-    return a.y + b.y == 0 && a.x + b.x == 0;
+    return {-direction.x, direction.y};
 }
 
-void change_direction(Snake& snake, const Vec2& direction)
+Vec2 rotate_right(const Vec2& direction)
 {
-    if (is_opposite(snake.direction, direction)) return;
+    return {direction.x, -direction.y};
+}
 
-    snake.direction = direction;
+Vec2 get_direction(const Snake& snake, Action action)
+{
+    switch (action) {
+    case Action::LEFT:
+        return rotate_left(snake.direction);
+
+    case Action::RIGHT:
+        return rotate_right(snake.direction);
+
+    case Action::STRAIGHT:
+        return snake.direction;
+    }
+
+    return snake.direction;
+}
+
+void apply_action(Snake& snake, Action action)
+{
+    snake.direction = get_direction(snake, action);
 }

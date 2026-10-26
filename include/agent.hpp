@@ -1,0 +1,29 @@
+#pragma once
+
+#include <array>
+#include <random>
+
+#include "game.hpp"
+
+constexpr int STATE_COUNT  = 2048;
+constexpr int ACTION_COUNT = 3;
+
+struct Agent {
+    std::array<std::array<float, ACTION_COUNT>, STATE_COUNT> q_table{};
+
+    float alpha   = 0.1f;
+    float gamma   = 0.9f;
+    float epsilon = 1.0f;
+};
+
+int get_state(const Game& game);
+
+int best_action(const Agent& agent, int state);
+
+Action choose_action(const Agent& agent, int state,
+                     std::mt19937& rng);
+
+void learn(Agent& agent, int state, Action action,
+           float reward, int next_state, bool done);
+
+void train(Agent& agent, int episodes, std::mt19937& rng);
