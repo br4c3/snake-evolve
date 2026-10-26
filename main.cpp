@@ -1,24 +1,13 @@
+#include <algorithm>
+#include <deque>
 #include <iostream>
-#include <queue>
-#include <utility>
-#include <vector>
 
 #define WIDTH  10
 #define HEIGHT 10
 
+#define EMPTY 0
 #define SNAKE 2
-
-int grid[HEIGHT][WIDTH];
-
-/*
- * Direction
- * UP:
- * DOWN:
- * LEFT:
- * RIGHT:
- */
-// int dy[4] = {-1, 1, 0, 0};
-// int dx[4] = {0, 0, -1, 1};
+#define FOOD  3
 
 struct Vec2 {
     int y;
@@ -40,24 +29,29 @@ constexpr Vec2 DOWN  = {1, 0};
 constexpr Vec2 LEFT  = {0, -1};
 constexpr Vec2 RIGHT = {0, 1};
 
-typedef struct {
-    int  head_x;
-    int  head_y;
-    Vec2 direction = RIGHT;
-    int  size;
-
+struct Snake {
+    Vec2             direction = RIGHT;
     std::deque<Vec2> body;
-} Snake;
+};
 
-void init(Snake& snake, std::pair<int, int> init_pos)
+struct Game {
+    Snake snake;
+    Vec2  food;
+    bool  running = true;
+};
+
+/*
+ * Initialize
+ */
+
+void init(Game& game, Vec2 init_pos)
 {
-    snake.head_y    = init_pos.first;
-    snake.head_x    = init_pos.second;
-    snake.direction = RIGHT;
+    game.snake.direction = RIGHT;
+    game.snake.body.clear();
+    game.snake.body.push_front(init_pos);
 
-    snake.size = 1;
-
-    snake.body.push_front({snake.head_y, snake.head_x});
+    game.food    = {3, 3};
+    game.running = true;
 }
 
 /*
@@ -78,82 +72,130 @@ void change_direction(Snake& snake, const Vec2& direction)
     snake.direction = direction;
 }
 
-void handle_input(Snake& snake, char key)
+void handle_input(Game& game, char key)
 {
     switch (key) {
     case 'w':
-        change_direction(snake, UP);
+        change_direction(game.snake, UP);
         break;
 
     case 's':
-        change_direction(snake, DOWN);
+        change_direction(game.snake, DOWN);
         break;
 
     case 'a':
-        change_direction(snake, LEFT);
+        change_direction(game.snake, LEFT);
         break;
 
     case 'd':
-        change_direction(snake, RIGHT);
+        change_direction(game.snake, RIGHT);
+        break;
+
+    case 'q':
+        game.running = false;
         break;
     }
 }
 
-void move(Snake& snake, int grid[][WIDTH])
-{
-    Vec2 next = snake.body.front() + snake.direction;
+/*
+ * Game logic
+ */
 
-    snake.body.push_front(next);
-    snake.body.pop_back();
+bool is_inside(const Vec2& pos)
+{
+    return pos.y >= 0 && pos.y < HEIGHT && pos.x >= 0 && pos.x < WIDTH;
 }
 
-void eat(Snake& snake, int grid[][WIDTH])
+bool move(Game& game)
 {
+    Snake& snake = game.snake;
+
+    if (snake.body.empty()) return false;
+
     Vec2 next = snake.body.front() + snake.direction;
 
+    if (!is_inside(next)) {
+        game.running = false;
+        return false;
+    }
+
+    bool grow = (next == game.food);
+
+    // 일반 이동이면 기존 꼬리 칸으로 진입 가능
+    auto end = snake.body.end();
+    if (!grow) --end;
+
+    // 일반 이동이면, 꼬리 충돌 로직을 넣지 않아도 된다
+    if (std::find(snake.body.begin(), end, next) != end) {
+        game.running = false;
+        return false;
+    }
+
     snake.body.push_front(next);
+
+    if (!grow) {
+        snake.body.pop_back();
+    } else {
+        // 임시 먹이 위치: 실제 게임에서는 랜덤 생성 예정
+        // 성장 확인을 위해 현재 먹이는 제거
+        game.food = {-1, -1};
+    }
+
+    return true;
 }
 
 /*
- * Update
+ * Display
  */
-void update(const Snake& snake, int grid[][WIDTH])
+
+void display(const Game& game)
 {
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            grid[y][x] = 0;
+    int grid[HEIGHT][WIDTH] = {};
+
+    if (is_inside(game.food)) {
+        grid[game.food.y][game.food.x] = FOOD;
+    }
+
+    for (const Vec2& pos : game.snake.body) {
+        if (is_inside(pos)) {
+            grid[pos.y][pos.x] = SNAKE;
         }
     }
 
-    for (const Vec2& pos : snake.body) {
-        grid[pos.y][pos.x] = SNAKE;
-    }
-}
-
-void display(Snake& snake, int grid[][WIDTH])
-{
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            std::cout << grid[i][j] << ' ';
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            std::cout << grid[y][x] << ' ';
         }
         std::cout << '\n';
     }
+
+    std::cout << '\n';
 }
+
+/*
+ * Main
+ */
 
 int main(void)
 {
-    Snake snake;
-    init(snake, {1, 1});
+    Game game;
+    init(game, {1, 1});
+
+    display(game);
 
     char key;
 
-    while (std::cin >> key) {
-        handle_input(snake, key);
+    while (game.running && std::cin >> key) {
+        handle_input(game, key);
 
-        move(snake, grid);
+        if (!game.running) break;
 
-        update(snake, grid);
-        display(snake, grid);
+        if (!move(game)) {
+            std::cout << "Game Over!\n";
+            break;
+        }
+
+        display(game);
     }
 
     return 0;
