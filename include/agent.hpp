@@ -23,6 +23,8 @@ int best_action(const Agent& agent, int state);
 Action choose_action(const Agent& agent, int state,
                      std::mt19937& rng);
 
+void print_q_table(const Agent& agent);
+
 void learn(Agent& agent, int state, Action action,
            float reward, int next_state, bool done);
 

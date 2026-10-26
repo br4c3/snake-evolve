@@ -83,6 +83,23 @@ Action choose_action(const Agent& agent, int state,
  * Q-Learning
  */
 
+void print_q_table(const Agent& agent)
+{
+    std::cout << "State\tSTRAIGHT\tLEFT\tRIGHT\n";
+
+    for (int state = 0; state < STATE_COUNT; state++) {
+        const auto& q = agent.q_table[state];
+
+        std::cout << state << '\t';
+
+        for (float value : q) {
+            std::cout << value << '\t';
+        }
+
+        std::cout << '\n';
+    }
+}
+
 void learn(Agent& agent, int state, Action action,
            float reward, int next_state, bool done)
 {

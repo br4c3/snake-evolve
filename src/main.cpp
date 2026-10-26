@@ -46,6 +46,7 @@ int main(void)
     std::cout << "Training started...\n";
 
     train(agent, EPISODES, rng);
+    print_q_table(agent);
 
     std::cout << "\nTraining completed.\n";
 
