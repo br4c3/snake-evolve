@@ -66,6 +66,16 @@ int best_action(const Agent& agent, int state)
     );
 }
 
+std::array<float, ACTION_COUNT> action_probabilities(
+    const Agent& agent, int state)
+{
+    const float random_probability = agent.epsilon / ACTION_COUNT;
+    std::array<float, ACTION_COUNT> probabilities{};
+    probabilities.fill(random_probability);
+    probabilities[best_action(agent, state)] += 1.0f - agent.epsilon;
+    return probabilities;
+}
+
 Action choose_action(const Agent& agent, int state,
                      std::mt19937& rng)
 {

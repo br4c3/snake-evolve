@@ -20,6 +20,9 @@ int get_state(const Game& game);
 
 int best_action(const Agent& agent, int state);
 
+std::array<float, ACTION_COUNT> action_probabilities(
+    const Agent& agent, int state);
+
 Action choose_action(const Agent& agent, int state,
                      std::mt19937& rng);
 
