@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 
 /*
  * State
@@ -85,18 +87,35 @@ Action choose_action(const Agent& agent, int state,
 
 void print_q_table(const Agent& agent)
 {
-    std::cout << "State\tSTRAIGHT\tLEFT\tRIGHT\n";
+    std::ofstream file("q_table.txt");
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open q_table.txt\n";
+        return;
+    }
+
+    constexpr int STATE_WIDTH = 10;
+    constexpr int VALUE_WIDTH = 15;
+
+    file << std::left
+         << std::setw(STATE_WIDTH) << "State"
+         << std::setw(VALUE_WIDTH) << "STRAIGHT"
+         << std::setw(VALUE_WIDTH) << "LEFT"
+         << std::setw(VALUE_WIDTH) << "RIGHT"
+         << '\n';
+
+    file << std::fixed << std::setprecision(4);
 
     for (int state = 0; state < STATE_COUNT; state++) {
         const auto& q = agent.q_table[state];
 
-        std::cout << state << '\t';
+        file << std::left << std::setw(STATE_WIDTH) << state;
 
         for (float value : q) {
-            std::cout << value << '\t';
+            file << std::right << std::setw(VALUE_WIDTH) << value;
         }
 
-        std::cout << '\n';
+        file << '\n';
     }
 }
 
