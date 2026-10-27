@@ -5,8 +5,7 @@
 
 bool is_inside(const Vec2& pos)
 {
-    return pos.y >= 0 && pos.y < HEIGHT &&
-           pos.x >= 0 && pos.x < WIDTH;
+    return pos.y >= 0 && pos.y < HEIGHT && pos.x >= 0 && pos.x < WIDTH;
 }
 
 bool is_collision(const Game& game, Vec2 next)
@@ -32,14 +31,9 @@ bool spawn_food(Game& game, std::mt19937& rng)
         for (int x = 0; x < WIDTH; x++) {
             Vec2 pos = {y, x};
 
-            auto it = std::find(
-                game.snake.body.begin(),
-                game.snake.body.end(),
-                pos
-            );
+            auto it = std::find(game.snake.body.begin(), game.snake.body.end(), pos);
 
-            if (it == game.snake.body.end())
-                empty_cells.push_back(pos);
+            if (it == game.snake.body.end()) empty_cells.push_back(pos);
         }
     }
 
@@ -48,9 +42,7 @@ bool spawn_food(Game& game, std::mt19937& rng)
         return false;
     }
 
-    std::uniform_int_distribution<int> dist(
-        0, static_cast<int>(empty_cells.size()) - 1
-    );
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(empty_cells.size()) - 1);
 
     game.food = empty_cells[dist(rng)];
 
@@ -87,8 +79,7 @@ StepResult step(Game& game, Action action, std::mt19937& rng)
 
     snake.body.push_front(next);
 
-    if (!grow)
-        snake.body.pop_back();
+    if (!grow) snake.body.pop_back();
 
     game.idle++;
 

@@ -4,14 +4,10 @@
 
 #include "vec2.hpp"
 
-enum class Action {
-    STRAIGHT = 0,
-    LEFT,
-    RIGHT
-};
+enum class Action { STRAIGHT = 0, LEFT, RIGHT };
 
 struct Snake {
-    Vec2 direction = RIGHT;
+    Vec2             direction = RIGHT;
     std::deque<Vec2> body;
 };
 

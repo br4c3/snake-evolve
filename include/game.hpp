@@ -15,7 +15,7 @@ constexpr int MAX_IDLE = 200;
 
 struct Game {
     Snake snake;
-    Vec2 food = {-1, -1};
+    Vec2  food = {-1, -1};
 
     int score = 0;
     int idle  = 0;
@@ -25,7 +25,7 @@ struct Game {
 
 struct StepResult {
     float reward;
-    bool done;
+    bool  done;
 };
 
 bool is_inside(const Vec2& pos);

@@ -4,7 +4,7 @@
 #include "agent.hpp"
 #include "renderer.hpp"
 
-constexpr int EPISODES = 15000;
+constexpr int EPISODES = 900000;
 
 int main(void)
 {
