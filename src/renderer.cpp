@@ -33,7 +33,7 @@ Decision make_decision(const Agent& agent, const Game& game, std::mt19937& rng)
 {
     Decision decision;
     decision.state         = get_state(game);
-    decision.q_values      = agent.q_table[decision.state];
+    decision.q_values      = predict(agent, decision.state);
     decision.probabilities = action_probabilities(agent, decision.state);
     decision.action        = choose_action(agent, decision.state, rng);
     return decision;
@@ -41,7 +41,7 @@ Decision make_decision(const Agent& agent, const Game& game, std::mt19937& rng)
 
 void draw_board(const Game& game)
 {
-    DrawText("Q-Learning Snake", BOARD_X, 20, 24, RAYWHITE);
+    DrawText("DQN Snake", BOARD_X, 20, 24, RAYWHITE);
 
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
@@ -63,11 +63,11 @@ void draw_board(const Game& game)
     }
 }
 
-void draw_q_table(const Agent& agent, const Decision& decision)
+void draw_dqn_output(const Agent& agent, const Decision& decision)
 {
     char text[128];
 
-    DrawText("Current Q-table row", PANEL_X, 32, 22, RAYWHITE);
+    DrawText("DQN output", PANEL_X, 32, 22, RAYWHITE);
     std::snprintf(text, sizeof(text), "State: %d", decision.state);
     DrawText(text, PANEL_X, 70, 18, LIGHTGRAY);
     std::snprintf(text, sizeof(text), "Epsilon: %.3f", agent.epsilon);
@@ -156,7 +156,7 @@ void run_visual_evaluation(Agent& agent, std::mt19937& rng)
         BeginDrawing();
         ClearBackground(BLACK);
         draw_board(game);
-        draw_q_table(agent, decision);
+        draw_dqn_output(agent, decision);
         draw_status(game, paused, steps_per_second);
         EndDrawing();
     }
