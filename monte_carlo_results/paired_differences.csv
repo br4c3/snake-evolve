@@ -1,0 +1,9 @@
+policy,metric,method,baseline,difference,ci_low,ci_high,sitt_only_success_count,baseline_only_success_count
+teacher,success,sitt_cbf_risk,cbf_only,0.139,0.103,0.175,249,110
+teacher,collision,sitt_cbf_risk,cbf_only,0.0,0.0,0.0,,
+teacher,success,sitt_cbf_risk,cbf_risk,-0.008,-0.039,0.024,120,128
+teacher,collision,sitt_cbf_risk,cbf_risk,0.0,0.0,0.0,,
+student,success,sitt_cbf_risk,cbf_only,0.276,0.245,0.307,296,20
+student,collision,sitt_cbf_risk,cbf_only,-0.013,-0.022,-0.005,,
+student,success,sitt_cbf_risk,cbf_risk,0.146,0.113,0.177,219,73
+student,collision,sitt_cbf_risk,cbf_risk,0.002,0.0,0.005,,
